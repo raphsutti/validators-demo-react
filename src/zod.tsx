@@ -21,14 +21,29 @@ const fetchPokemon = async (id: string) => {
 
 export const ZodComponent = () => {
   const [id, setId] = useState("");
-  const { data } = useQuery(["pokemon", id], () => fetchPokemon(id));
+  const { data } = useQuery(["pokemon", id], () =>
+    id ? fetchPokemon(id) : null
+  );
 
   return (
     <div>
       <form>
-        <input onChange={(e) => setId(e.target.value)} type="text" />
+        <label htmlFor="pokemonId">Pokemon number: </label>
+        <input
+          onChange={(e) => setId(e.target.value)}
+          type="text"
+          name="pokemonId"
+        />
       </form>
-      {!data ? null : <div>{data.name}</div>}
+
+      {data ? (
+        <>
+          <img src={data.sprites.front_default} alt="pokemon sprite" />
+          <div>Name: {data.name}</div>
+          <div>Weight: {data.weight}</div>
+          <div>Height: {data.height}</div>
+        </>
+      ) : null}
     </div>
   );
 };
