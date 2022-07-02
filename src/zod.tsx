@@ -2,6 +2,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
+// Define one schema
 const pokemonValidator = z.object({
   id: z.number(),
   name: z.string(),
@@ -11,6 +12,9 @@ const pokemonValidator = z.object({
     front_default: z.string().url(),
   }),
 });
+
+// TypeScript type
+// type PokemonResponse = z.infer<typeof pokemonValidator>
 
 const fetchPokemon = async (id: string) => {
   const res = await (
