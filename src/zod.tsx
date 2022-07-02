@@ -1,5 +1,5 @@
 import { z } from "zod";
-import React from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 
 const pokemonValidator = z.object({
@@ -12,18 +12,23 @@ const pokemonValidator = z.object({
   }),
 });
 
-const usePokemon = (id: string) => {
-  return useQuery(["user-query"], async () => {
-    const res = await (
-      await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-    ).json();
-    return pokemonValidator.parse(res);
-  });
+const fetchPokemon = async (id: string) => {
+  const res = await (
+    await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+  ).json();
+  return pokemonValidator.parse(res);
 };
 
-export const ZodComponent: React.FC<{ id: string }> = ({ id }) => {
-  const { data } = usePokemon(id);
+export const ZodComponent = () => {
+  const [id, setId] = useState("");
+  const { data } = useQuery(["pokemon", id], () => fetchPokemon(id));
 
-  if (!data) return <div>Loading...</div>;
-  return <div>{data.name}</div>;
+  return (
+    <div>
+      <form>
+        <input onChange={(e) => setId(e.target.value)} type="text" />
+      </form>
+      {!data ? null : <div>{data.name}</div>}
+    </div>
+  );
 };

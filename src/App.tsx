@@ -1,4 +1,4 @@
-import { ZodComponent } from "./zod";
+import { ZodComponent } from "./Zod";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -8,8 +8,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="App">
         <header className="App-header">
-          {/* TODO add user input for id */}
-          <ZodComponent id="2" />
+          <ZodComponent />
         </header>
       </div>
     </QueryClientProvider>
