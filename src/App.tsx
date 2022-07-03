@@ -1,6 +1,7 @@
 import { ZodComponent } from "./Zod";
 
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AjvComponent } from "./Ajv";
 
 const queryClient = new QueryClient();
 function App() {
@@ -9,6 +10,7 @@ function App() {
       <div className="App">
         <header className="App-header">
           <ZodComponent />
+          <AjvComponent />
         </header>
       </div>
     </QueryClientProvider>
