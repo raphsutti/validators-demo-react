@@ -1,42 +1,42 @@
-import { z } from "zod";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { Record, Number, String } from "runtypes";
 
 // Define one schema
-const pokemonValidator = z.object({
-  id: z.number(),
-  name: z.string(),
-  height: z.number().min(0),
-  weight: z.number().min(0),
-  sprites: z.object({
-    front_default: z.string().url(),
+const pokemonValidator = Record({
+  id: Number,
+  name: String,
+  height: Number.withConstraint((n) => n > 0 || `${n} is not positive`),
+  weight: Number.withConstraint((n) => n > 0 || `${n} is not positive`),
+  sprites: Record({
+    front_default: String,
   }),
-  // doesntExist: z.number(),
+  // doesntExist: Number,
 });
 
 // TypeScript type
-// type PokemonResponse = z.infer<typeof pokemonValidator>
+// type PokemonResponse = Static<typeof pokemonValidator>;
 
 const fetchPokemon = async (id: string) => {
   const res = await (
     await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   ).json();
-  return pokemonValidator.parse(res);
+  return pokemonValidator.check(res);
 };
 
-export const ZodComponent = () => {
-  const [zodId, setZodId] = useState("");
-  const { data } = useQuery(["pokemon", zodId], () =>
-    zodId ? fetchPokemon(zodId) : null
+export const RunTypesComponent = () => {
+  const [runTypesId, setRunTypesId] = useState("");
+  const { data } = useQuery(["pokemon", runTypesId], () =>
+    runTypesId ? fetchPokemon(runTypesId) : null
   );
 
   return (
     <div>
-      <h1>Zod</h1>
+      <h1>RunTypes</h1>
       <form>
         <label htmlFor="pokemonId">Pokemon number: </label>
         <input
-          onChange={(e) => setZodId(e.target.value)}
+          onChange={(e) => setRunTypesId(e.target.value)}
           type="text"
           name="pokemonId"
         />

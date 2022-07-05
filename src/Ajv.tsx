@@ -2,7 +2,7 @@ import Ajv, { JSONSchemaType } from "ajv";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true, verbose: true });
 
 interface PokemonData {
   id: number;
@@ -12,6 +12,7 @@ interface PokemonData {
   sprites: {
     front_defaults: string;
   };
+  // doesntExist: number;
 }
 
 const pokemonSchema: JSONSchemaType<PokemonData> = {
@@ -28,6 +29,7 @@ const pokemonSchema: JSONSchemaType<PokemonData> = {
       },
       required: [],
     },
+    // doesntExist: { type: "integer" },
   },
   required: ["id"],
   additionalProperties: true,
