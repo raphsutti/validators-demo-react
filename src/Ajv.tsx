@@ -4,18 +4,18 @@ import { useQuery } from "react-query";
 
 const ajv = new Ajv({ allErrors: true, verbose: true });
 
-interface PokemonData {
+interface PokemonResponse {
   id: number;
   name: string;
   weight: number;
   height: number;
   sprites: {
-    front_defaults: string;
+    front_default: string;
   };
   // doesntExist: number;
 }
 
-const pokemonSchema: JSONSchemaType<PokemonData> = {
+const pokemonSchema: JSONSchemaType<PokemonResponse> = {
   type: "object",
   properties: {
     id: { type: "integer" },
@@ -25,7 +25,7 @@ const pokemonSchema: JSONSchemaType<PokemonData> = {
     sprites: {
       type: "object",
       properties: {
-        front_defaults: { type: "string" },
+        front_default: { type: "string" },
       },
       required: [],
     },
@@ -39,9 +39,10 @@ const fetchPokemon = async (id: string) => {
   const res = await (
     await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   ).json();
-  const valid = ajv.validate(pokemonSchema, res);
-  if (!valid) console.error(ajv.errors);
-  return res;
+  const validate = ajv.compile(pokemonSchema);
+  if (validate(res)) return res;
+
+  throw new Error(String(ajv.errors));
 };
 
 export const AjvComponent = () => {
